@@ -1,0 +1,56 @@
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/habittracker}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:password}
+    hikari:
+      connection-timeout: 20000
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 300000
+      max-lifetime: 1200000
+      connection-init-sql: SELECT 1
+      pool-name: Hikari
+      auto-commit: true
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  session:
+    store-type: jdbc
+    jdbc:
+      initialize-schema: always
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: /
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain,application/javascript,text/css
+
+logging:
+  level:
+    com.example.backend: INFO
+    org.springframework.security: INFO
+    org.springframework.web: INFO
+
+# Supabase configuration (for reference, not directly used by Spring Boot)
+supabase:
+  url: ${SUPABASE_URL:https://your-project.supabase.co}
+  anon-key: ${SUPABASE_ANON_KEY:your-anon-key}
