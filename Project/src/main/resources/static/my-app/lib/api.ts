@@ -4,14 +4,17 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8
 
 async function getAuthHeaders() {
   const { data: { session } } = await supabase.auth.getSession()
-  if (!session?.access_token) {
-    throw new Error('No authentication token available')
+  
+  if (session?.access_token) {
+    console.log('Using real Supabase token for authenticated user');
+    return {
+      'Authorization': `Bearer ${session.access_token}`,
+      'Content-Type': 'application/json',
+    };
   }
   
-  return {
-    'Authorization': `Bearer ${session.access_token}`,
-    'Content-Type': 'application/json',
-  }
+  console.error('No Supabase session found - user must be logged in');
+  throw new Error('User not authenticated - please log in');
 }
 
 export interface Habit {
@@ -106,21 +109,35 @@ export async function toggleHabitCompletion(habitId: string, date: string): Prom
 }
 
 export async function getHabitCompletionForDate(habitId: string, date: string): Promise<DailyCompletion | null> {
-  const headers = await getAuthHeaders()
-  const response = await fetch(`${API_BASE_URL}/daily-completions/check?habitId=${habitId}&date=${date}`, {
-    method: 'GET',
-    headers,
-  })
-  
-  if (!response.ok) {
-    if (response.status === 404) {
-      return null // No completion record found
+  try {
+    console.log('getHabitCompletionForDate: Checking completion for habit:', habitId, 'date:', date);
+    
+    const headers = await getAuthHeaders();
+    
+    const response = await fetch(`${API_BASE_URL}/daily-completions/check?habitId=${habitId}&date=${date}`, {
+      method: 'GET',
+      headers,
+    });
+    
+    console.log('getHabitCompletionForDate: Response status:', response.status);
+    
+    if (!response.ok) {
+      if (response.status === 404) {
+        console.log('getHabitCompletionForDate: No completion record found');
+        return null; // No completion record found
+      }
+      console.error('getHabitCompletionForDate: Failed to check habit completion, status:', response.status);
+      throw new Error('Failed to check habit completion');
     }
-    throw new Error('Failed to check habit completion')
+    
+    const text = await response.text();
+    const result = text ? JSON.parse(text) : null;
+    console.log('getHabitCompletionForDate: Success, result:', result);
+    return result;
+  } catch (error) {
+    console.error('getHabitCompletionForDate: Error:', error);
+    throw error;
   }
-  
-  const text = await response.text()
-  return text ? JSON.parse(text) : null
 }
 
 export async function getCompletions(habitId: string, startDate: string, endDate: string): Promise<DailyCompletion[]> {

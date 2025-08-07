@@ -18,7 +18,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/habits")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"}, allowCredentials = "false")
 public class HabitController {
 
     @Autowired
@@ -184,17 +184,27 @@ public class HabitController {
     }
 
     private UUID getUserIdFromRequest(HttpServletRequest request) {
-        String userId = (String) request.getAttribute("userId");
+        // Check if authentication was processed
         Boolean authenticated = (Boolean) request.getAttribute("authenticated");
+        Boolean authMissing = (Boolean) request.getAttribute("authenticationMissing");
         
-        if (userId != null && !userId.trim().isEmpty() && Boolean.TRUE.equals(authenticated)) {
-            System.out.println("Authenticated user ID: " + userId);
-            return UUID.fromString(userId);
+        if (Boolean.TRUE.equals(authMissing) || Boolean.FALSE.equals(authenticated)) {
+            System.err.println("ERROR: Request is not authenticated - authentication required");
+            throw new IllegalArgumentException("Authentication required - please provide valid authorization token");
         }
         
-        // EMERGENCY FALLBACK: For habit tracking when authentication fails
-        UUID fallbackUserId = UUID.randomUUID();
-        System.out.println("WARNING: No authenticated user - using emergency fallback for habit tracking");
-        return fallbackUserId;
+        String userIdStr = (String) request.getAttribute("userId");
+        if (userIdStr != null && !userIdStr.trim().isEmpty()) {
+            try {
+                System.out.println("Authenticated user ID: " + userIdStr);
+                return UUID.fromString(userIdStr);
+            } catch (IllegalArgumentException e) {
+                System.err.println("Invalid UUID format in request: " + userIdStr);
+                throw new IllegalArgumentException("Invalid user ID format in request");
+            }
+        }
+        
+        System.err.println("No user ID found in authenticated request");
+        throw new IllegalArgumentException("No user ID found in request - authentication may have failed");
     }
 }

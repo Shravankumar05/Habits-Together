@@ -5,8 +5,9 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import HabitList from '@/components/habits/HabitList'
+import GroupPanel from '@/components/groups/GroupPanel'
 import { Button } from '@/components/ui/button'
-import { LogOut, Activity, Sparkles } from 'lucide-react'
+import { LogOut, Activity, Users, User } from 'lucide-react'
 
 export default function Home() {
     const { user, signOut } = useAuth()
@@ -33,7 +34,7 @@ export default function Home() {
                                             Habit Tracker
                                         </h1>
                                         <p className="text-sm text-ocean-600">
-                                            Build better routines
+                                            Build better routines together
                                         </p>
                                     </div>
                                 </div>
@@ -58,32 +59,56 @@ export default function Home() {
                 </header>
 
                 <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                    <div className="mb-12">
-                        <div className="flex items-center space-x-3 mb-4">
-                            <div className="w-10 h-10 bg-gradient-to-br from-cream-400 to-cream-600 rounded-xl flex items-center justify-center">
-                                <Sparkles className="w-6 h-6 text-white" />
+                    {/* Two-column layout */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        {/* Left Column - Personal Habits */}
+                        <div className="space-y-6">
+                            <div className="flex items-center space-x-3 mb-4">
+                                <div className="w-10 h-10 bg-gradient-to-br from-cream-400 to-cream-600 rounded-xl flex items-center justify-center">
+                                    <User className="w-6 h-6 text-white" />
+                                </div>
+                                <div>
+                                    <h2 className="text-2xl font-bold text-ocean-800">
+                                        Personal Habits
+                                    </h2>
+                                    <p className="text-ocean-600">
+                                        Your individual daily routines
+                                    </p>
+                                </div>
                             </div>
-                            <div>
-                                <h2 className="text-2xl font-bold text-ocean-800">
-                                    Your Habits
-                                </h2>
-                                <p className="text-ocean-600">
-                                    Track your daily progress and build consistency
-                                </p>
+                            
+                            {/* Simple Today's Progress Text */}
+                            <div className="glass-card p-4 mb-6">
+                                <div className="text-sm text-ocean-600 font-medium mb-1">
+                                    Today's Progress
+                                </div>
+                                <div className="text-ocean-800">
+                                    Check off your habits to track your daily progress
+                                </div>
                             </div>
+                            
+                            <HabitList />
                         </div>
-                        
-                        {/* Simple Today's Progress Text */}
-                        <div className="glass-card p-4 mb-6 max-w-sm">
-                            <div className="text-sm text-ocean-600 font-medium mb-1">
-                                Today's Progress
+
+                        {/* Right Column - Group Habits */}
+                        <div className="space-y-6">
+                            <div className="flex items-center space-x-3 mb-4">
+                                <div className="w-10 h-10 bg-gradient-to-br from-purple-400 to-purple-600 rounded-xl flex items-center justify-center">
+                                    <Users className="w-6 h-6 text-white" />
+                                </div>
+                                <div>
+                                    <h2 className="text-2xl font-bold text-ocean-800">
+                                        Group Habits
+                                    </h2>
+                                    <p className="text-ocean-600">
+                                        Shared accountability with friends and family
+                                    </p>
+                                </div>
                             </div>
-                            <div className="text-ocean-800">
-                                Check off your habits to track your daily progress
-                            </div>
+                            
+                            <GroupPanel />
                         </div>
                     </div>
-                    <HabitList />
                 </main>
             </div>
         </ProtectedRoute>

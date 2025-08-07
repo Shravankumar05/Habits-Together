@@ -21,17 +21,30 @@ export default function HabitList() {
 
     const loadHabits = async () => {
         try {
+            console.log('=== INTENSIVE DEBUGGING: HabitList loadHabits START ===');
+            console.log('HabitList: Loading habits from API...');
+            
             setLoading(true)
             const data = await fetchHabits()
+            console.log('DEBUGGING: fetchHabits returned:', data.length, 'habits');
+            console.log('DEBUGGING: Habits data:', JSON.stringify(data, null, 2));
+            
             setHabits(data)
             setError('')
-        } catch (err) {
+            console.log('DEBUGGING: Set habits state with:', data.length, 'habits');
+            console.log('=== INTENSIVE DEBUGGING: HabitList loadHabits END ===');
+        } catch (error) {
+            console.error('=== CRITICAL ERROR in HabitList loadHabits ===');
+            console.error('Error type:', typeof error);
+            console.error('Error message:', error?.message);
+            console.error('Error stack:', error?.stack);
+            console.error('Full error object:', error);
             setError('Failed to load habits')
-            console.error('Error loading habits:', err)
+            setHabits([]);
         } finally {
             setLoading(false)
         }
-    }
+    };
 
     const handleCreateHabit = async (habitData: Omit<Habit, 'id' | 'createdAt' | 'updatedAt'>) => {
         try {
