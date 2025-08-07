@@ -34,15 +34,28 @@ export default function CreateGroupModal({ isOpen, onClose, onCreateGroup }: Cre
         try {
             // Get authentication token from Supabase session
             const { createClient } = await import('@supabase/supabase-js');
-            const supabase = createClient(
-                process.env.NEXT_PUBLIC_SUPABASE_URL!,
-                process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY!
-            );
             
-            const { data: { session } } = await supabase.auth.getSession();
+            // Get environment variables safely
+            const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+            const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY;
+            
+            if (!supabaseUrl || !supabaseKey) {
+                throw new Error('Supabase configuration missing');
+            }
+            
+            const supabase = createClient(supabaseUrl, supabaseKey);
+            
+            const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+            
+            if (sessionError) {
+                console.error('Session error:', sessionError);
+                throw new Error('Failed to get authentication session');
+            }
+            
             const token = session?.access_token;
             
             console.log('Token retrieved:', token ? 'SUCCESS' : 'FAILED');
+            console.log('Token length:', token?.length || 0);
             
             if (!token) {
                 throw new Error('No authentication token available. Please log in again.');
@@ -59,6 +72,8 @@ export default function CreateGroupModal({ isOpen, onClose, onCreateGroup }: Cre
                     description: groupDescription.trim() 
                 })
             });
+
+            console.log('API Response status:', response.status);
 
             if (!response.ok) {
                 const errorText = await response.text();
