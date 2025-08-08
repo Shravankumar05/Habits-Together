@@ -28,11 +28,36 @@ export default function JoinGroupModal({ isOpen, onClose, onJoinGroup }: JoinGro
         setError('')
 
         try {
+            // Get authentication token from Supabase session
+            const { createClient } = await import('@supabase/supabase-js');
+            
+            const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+            const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY;
+            
+            if (!supabaseUrl || !supabaseKey) {
+                throw new Error('Supabase configuration missing');
+            }
+            
+            const supabase = createClient(supabaseUrl, supabaseKey);
+            const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+            
+            if (sessionError) {
+                console.error('JoinGroupModal: Session error:', sessionError);
+                throw new Error('Failed to get authentication session');
+            }
+            
+            const token = session?.access_token;
+            console.log('JoinGroupModal: Token retrieved:', token ? 'SUCCESS' : 'FAILED');
+            
+            if (!token) {
+                throw new Error('No authentication token available. Please log in again.');
+            }
+            
             const response = await fetch(`http://localhost:8080/api/groups/${groupId}/join`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    'Authorization': `Bearer ${token}`
                 }
             })
 

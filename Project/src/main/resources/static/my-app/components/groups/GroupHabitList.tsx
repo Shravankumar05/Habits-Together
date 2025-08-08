@@ -115,7 +115,7 @@ export default function GroupHabitList({
                                                 <User className="w-3 h-3 text-white" />
                                             </div>
                                             <span className="text-sm font-medium text-ocean-800">
-                                                {member.display_name || member.email.split('@')[0]}
+                                                {member.display_name || (member.email ? member.email.split('@')[0] : 'Unknown User')}
                                                 {isCurrentUser && (
                                                     <span className="text-xs text-ocean-500 ml-1">(You)</span>
                                                 )}

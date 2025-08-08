@@ -62,8 +62,34 @@ export default function GroupView({ group, onBack }: GroupViewProps) {
             }
 
             try {
+                // Get authentication token from Supabase session
+                const { createClient } = await import('@supabase/supabase-js');
+                
+                const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+                const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY;
+                
+                if (!supabaseUrl || !supabaseKey) {
+                    throw new Error('Supabase configuration missing');
+                }
+                
+                const supabase = createClient(supabaseUrl, supabaseKey);
+                const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+                
+                if (sessionError) {
+                    console.error('GroupView: Session error:', sessionError);
+                    throw new Error('Failed to get authentication session');
+                }
+                
+                const token = session?.access_token;
+                console.log('GroupView: Token retrieved:', token ? 'SUCCESS' : 'FAILED');
+                console.log('GroupView: Token length:', token?.length || 0);
+                
+                if (!token) {
+                    throw new Error('No authentication token available. Please log in again.');
+                }
+
                 const headers = {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    'Authorization': `Bearer ${token}`
                 };
 
                 console.log('GroupView: Making API calls for group ID:', group.id);
@@ -124,8 +150,33 @@ export default function GroupView({ group, onBack }: GroupViewProps) {
             const today = new Date().toISOString().split('T')[0]
             console.log('GroupView: Toggling completion for habit:', habitId, 'user:', userId, 'date:', today);
             
+            // Get authentication token from Supabase session
+            const { createClient } = await import('@supabase/supabase-js');
+            
+            const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+            const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY;
+            
+            if (!supabaseUrl || !supabaseKey) {
+                throw new Error('Supabase configuration missing');
+            }
+            
+            const supabase = createClient(supabaseUrl, supabaseKey);
+            const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+            
+            if (sessionError) {
+                console.error('GroupView: Session error in toggle completion:', sessionError);
+                throw new Error('Failed to get authentication session');
+            }
+            
+            const token = session?.access_token;
+            console.log('GroupView: Toggle completion token retrieved:', token ? 'SUCCESS' : 'FAILED');
+            
+            if (!token) {
+                throw new Error('No authentication token available for completion toggle. Please log in again.');
+            }
+            
             const headers = {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
             };
 
@@ -219,7 +270,7 @@ export default function GroupView({ group, onBack }: GroupViewProps) {
                     <div className="flex items-center space-x-2">
                         {groupMembers.map((member, index) => (
                             <span key={member.id} className="text-sm text-ocean-700">
-                                {member.displayName || member.email.split('@')[0]}
+                                {member.displayName || (member.email ? member.email.split('@')[0] : 'Unknown User')}
                                 {index < groupMembers.length - 1 && ','}
                             </span>
                         ))}

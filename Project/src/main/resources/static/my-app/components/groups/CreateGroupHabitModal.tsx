@@ -60,31 +60,77 @@ export default function CreateGroupHabitModal({
         setLoading(true)
 
         try {
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 1000))
-
-            const newHabit: GroupHabit = {
-                id: Date.now().toString(),
-                group_id: groupId,
-                name: habitName.trim(),
-                description: habitDescription.trim() || undefined,
-                color: selectedColor,
-                created_by: 'current_user_id',
-                created_at: new Date().toISOString(),
-                updated_at: new Date().toISOString()
+            console.log('CreateGroupHabitModal: Creating group habit for group:', groupId);
+            
+            // Get authentication token from Supabase session
+            const { createClient } = await import('@supabase/supabase-js');
+            
+            const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+            const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY;
+            
+            if (!supabaseUrl || !supabaseKey) {
+                throw new Error('Supabase configuration missing');
+            }
+            
+            const supabase = createClient(supabaseUrl, supabaseKey);
+            const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+            
+            if (sessionError) {
+                console.error('CreateGroupHabitModal: Session error:', sessionError);
+                throw new Error('Failed to get authentication session');
+            }
+            
+            const token = session?.access_token;
+            console.log('CreateGroupHabitModal: Token retrieved:', token ? 'SUCCESS' : 'FAILED');
+            
+            if (!token) {
+                throw new Error('No authentication token available. Please log in again.');
             }
 
-            onCreateHabit(newHabit)
+            // Make real API call to create group habit
+            const habitData = {
+                name: habitName.trim(),
+                description: habitDescription.trim() || undefined,
+                color: selectedColor
+            };
+
+            console.log('CreateGroupHabitModal: Sending habit data:', habitData);
+
+            const response = await fetch(`http://localhost:8080/api/groups/${groupId}/habits`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(habitData)
+            });
+
+            console.log('CreateGroupHabitModal: API response status:', response.status);
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('CreateGroupHabitModal: API Error:', response.status, errorText);
+                throw new Error(`Failed to create group habit: ${response.status}`);
+            }
+
+            const newHabit = await response.json();
+            console.log('CreateGroupHabitModal: Group habit created successfully:', newHabit);
+
+            onCreateHabit(newHabit);
             
             // Reset form
-            setHabitName('')
-            setHabitDescription('')
-            setSelectedColor(HABIT_COLORS[0])
-            setErrors({})
+            setHabitName('');
+            setHabitDescription('');
+            setSelectedColor(HABIT_COLORS[0]);
+            setErrors({});
+            
+            // Close modal
+            onClose();
         } catch (error) {
-            console.error('Error creating group habit:', error)
+            console.error('CreateGroupHabitModal: Error creating group habit:', error);
+            setErrors({ general: error instanceof Error ? error.message : 'Failed to create group habit' });
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
     }
 
