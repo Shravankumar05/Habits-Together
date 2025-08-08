@@ -107,7 +107,6 @@ Thumbs.db
 ehthumbs.db
 Desktop.ini
 
-# CRITICAL: Environment and Configuration Files
 .env
 .env.local
 .env.production
@@ -173,3 +172,7 @@ build/
 
 ### VS Code ###
 .vscode/
+docs/*
+node_modules/
+.next/
+dist/

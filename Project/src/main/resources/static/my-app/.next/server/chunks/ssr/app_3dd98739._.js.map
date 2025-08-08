@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 8, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/mshra/Documents/Shravan/Career/Coding%20projects/CRUD%201/Backend/Habits-Together/Project/src/main/resources/static/my-app/app/twitter-image.png.mjs%20%28structured%20image%20object%29"],"sourcesContent":["import src from \"IMAGE\";\nexport default { src, width: 1200, height: 600 }\n"],"names":[],"mappings":";;;AAAA;;uCACe;IAAE,KAAA,gHAAA,CAAA,UAAG;IAAE,OAAO;IAAM,QAAQ;AAAI","debugId":null}}]
+}
