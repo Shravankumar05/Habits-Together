@@ -263,6 +263,31 @@ export default function GroupView({ group, onBack }: GroupViewProps) {
                     </div>
                 </div>
 
+                {/* Group ID for Invitations */}
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h3 className="text-sm font-semibold text-blue-800 mb-1">
+                                Group ID (Share with friends to invite them)
+                            </h3>
+                            <div className="flex items-center space-x-2">
+                                <code className="bg-blue-100 text-blue-800 px-3 py-1 rounded-md font-mono text-sm">
+                                    {group.id}
+                                </code>
+                                <Button
+                                    onClick={() => {
+                                        navigator.clipboard.writeText(group.id);
+                                        console.log('Group ID copied to clipboard:', group.id);
+                                    }}
+                                    className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 text-xs rounded-md"
+                                >
+                                    Copy ID
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 {/* Group Members */}
                 <div className="flex items-center space-x-2 mb-4">
                     <Users className="w-4 h-4 text-ocean-600" />
