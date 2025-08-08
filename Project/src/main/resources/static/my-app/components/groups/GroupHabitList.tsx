@@ -3,6 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { Check, X, Circle, CheckCircle2, User } from 'lucide-react'
 import { GroupHabit, GroupMember, GroupHabitCompletion } from './GroupView'
+import { useState, useEffect } from 'react'
 
 interface GroupHabitListProps {
     habits: GroupHabit[]
@@ -18,7 +19,40 @@ export default function GroupHabitList({
     onToggleCompletion 
 }: GroupHabitListProps) {
     const today = new Date().toISOString().split('T')[0]
-    const currentUserId = localStorage.getItem('userId') || 'anonymous-user' // Get from localStorage or use anonymous
+    const [currentUserId, setCurrentUserId] = useState<string>('')
+
+    useEffect(() => {
+        const getCurrentUserId = async () => {
+            try {
+                // Get current user ID from Supabase session
+                const { createClient } = await import('@supabase/supabase-js');
+                
+                const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+                const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY;
+                
+                if (!supabaseUrl || !supabaseKey) {
+                    console.error('GroupHabitList: Supabase configuration missing');
+                    return;
+                }
+                
+                const supabase = createClient(supabaseUrl, supabaseKey);
+                const { data: { session } } = await supabase.auth.getSession();
+                
+                if (session?.user?.id) {
+                    console.log('GroupHabitList: Current user ID retrieved:', session.user.id);
+                    setCurrentUserId(session.user.id);
+                } else {
+                    console.log('GroupHabitList: No user session found');
+                    setCurrentUserId('anonymous-user');
+                }
+            } catch (error) {
+                console.error('GroupHabitList: Error getting current user ID:', error);
+                setCurrentUserId('anonymous-user');
+            }
+        };
+
+        getCurrentUserId();
+    }, []);
 
     const getCompletionStatus = (habitId: string, userId: string) => {
         const completion = completions.find(
