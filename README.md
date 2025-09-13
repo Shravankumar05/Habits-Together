@@ -2,9 +2,9 @@
 
 A comprehensive habit tracking application with advanced AI-powered analytics, group dynamics analysis, and evidence-based habit formation insights. Transform your habit data into actionable insights with 25+ analytics endpoints and behavioral science-backed recommendations.
 
-## 🚀 Features Overview
+## Features Overview
 
-### 🧠 AI-Powered Individual Analytics
+### AI-Powered Individual Analytics
 - **Success Rate Tracking**: Real-time completion rate analysis with trend detection
 - **Consistency Scoring**: Mathematical variance analysis to measure habit stability
 - **Formation Stage Tracking**: INITIATION → LEARNING → STABILITY → MASTERY progression
@@ -13,7 +13,7 @@ A comprehensive habit tracking application with advanced AI-powered analytics, g
 - **Predictive Forecasting**: 30-day success predictions with confidence intervals
 - **Anomaly Detection**: Identifies unusual patterns and exceptional streaks
 
-### 👥 Group Dynamics & Team Challenges
+### Group Dynamics & Team Challenges
 - **Group Momentum Scoring**: Exponential weighting algorithm for activity trends
 - **Cohesion Analysis**: Measures participation consistency across team members
 - **Synergistic Scoring**: Analyzes collaboration effects and team performance
@@ -21,7 +21,7 @@ A comprehensive habit tracking application with advanced AI-powered analytics, g
 - **Key Contributor Identification**: Identifies leaders, high performers, and participation patterns
 - **Collective Streak Tracking**: Group achievement monitoring and celebration
 
-### 🔬 Habit Formation Science
+### Habit Formation Science
 - **Behavioral Science Integration**: Evidence-based insights from Lally et al. (2010) research
 - **Automaticity Assessment**: Measures development of automatic responses
 - **Context Stability Analysis**: Evaluates environmental consistency factors
@@ -29,7 +29,7 @@ A comprehensive habit tracking application with advanced AI-powered analytics, g
 - **Personalized Reinforcement Strategies**: Tailored interventions for each formation stage
 - **Progress Milestone Tracking**: Celebrates formation achievements and breakthroughs
 
-### 📊 Advanced Data Visualization
+### Advanced Data Visualization
 - **Completion Heatmaps**: Daily and weekly pattern visualization matrices
 - **Correlation Analysis**: Statistical relationships between habits with Pearson coefficients
 - **Trend Analysis**: Mathematical slope calculations with direction detection
@@ -37,13 +37,13 @@ A comprehensive habit tracking application with advanced AI-powered analytics, g
 - **Correlation Matrices**: Visual habit relationship strength categorization
 - **Forecast Visualization**: Predictive charts with confidence intervals
 
-### 🔒 Privacy & Security
+### Privacy & Security
 - **Granular Privacy Controls**: User-controlled data sharing settings
 - **Anonymization Options**: Anonymous data sharing capabilities
 - **Secure APIs**: Authentication required for all analytics endpoints
 - **Data Retention Policies**: Configurable cleanup and optimization
 
-## 🛠️ Setup Instructions
+## Setup Instructions
 
 ### Prerequisites
 - **Java 17+** (Required for Spring Boot 3.x)
@@ -203,7 +203,7 @@ cd Project
 - **Repository Tests**: Database operation validation
 - **Entity Tests**: JPA mapping and constraint validation
 
-## 🔧 Configuration
+## Configuration
 
 ### Analytics Configuration
 The analytics system runs automated tasks:
@@ -219,7 +219,7 @@ Users can control their data sharing through privacy settings:
 - Visibility levels: PRIVATE, GROUP_ONLY, ANONYMOUS, PUBLIC
 - Smart notifications (default: true)
 
-## 📈 Performance Features
+## Performance Features
 
 ### Database Optimizations
 - **Strategic Indexing**: Optimized queries for analytics operations (5x faster)
@@ -233,7 +233,7 @@ Users can control their data sharing through privacy settings:
 - **Async Processing**: Non-blocking analytics calculations
 - **Query Optimization**: Minimized database round trips
 
-## 🚀 Deployment
+## Deployment
 
 ### Production Setup
 1. **Environment Variables**
@@ -254,40 +254,6 @@ Users can control their data sharing through privacy settings:
    java -jar target/backend-0.0.1-SNAPSHOT.jar
    ```
 
-### Docker Deployment
-```bash
-# Build Docker image
-docker build -t habits-together .
 
-# Run with Docker Compose
-docker-compose up -d
-```
 
-## 📚 API Documentation
-
-Once the application is running, access the API documentation at:
-- Swagger UI: http://localhost:8080/swagger-ui.html
-- OpenAPI Spec: http://localhost:8080/v3/api-docs
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🆘 Support
-
-For support and questions:
-- Create an issue in the GitHub repository
-- Check the API documentation for endpoint details
-- Review the test files for usage examples
-
----
-
-**Built with Spring Boot, PostgreSQL, and React** 🚀
+**Built with Spring Boot, PostgreSQL, and React**
